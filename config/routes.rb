@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   resources :products, only: [:show]
 
   get "admin" => "admin#index"
+  get "category" => "category#index"
   get "cart" => "carts#show"
   post "checkout" => "checkouts#create"
   get "success" => "checkouts#success"
