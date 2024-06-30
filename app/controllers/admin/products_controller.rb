@@ -3,7 +3,11 @@ class Admin::ProductsController < AdminController
 
   # GET /admin/products or /admin/products.json
   def index
-    @admin_products = Product.all
+    if params[:query].present?
+      @pagy, @admin_products = pagy(Product.where("name LIKE ?", "%#{params[:query]}%"))
+    else
+      @pagy, @admin_products = pagy(Product.all)
+    end
   end
 
   # GET /admin/products/1 or /admin/products/1.json
@@ -43,7 +47,7 @@ class Admin::ProductsController < AdminController
           @admin_product.images.attach(image)
         end
       end
-    redirect_to admin_products_path, notice: "Product updated successfully"
+      redirect_to admin_products_path, notice: "Product updated successfully"
     else
       render :edit, status: :unprocessable_entity
     end
@@ -51,7 +55,7 @@ class Admin::ProductsController < AdminController
 
   # DELETE /admin/products/1 or /admin/products/1.json
   def destroy
-    @admin_product.destroy
+    @admin_product.destroy!
 
     respond_to do |format|
       format.html { redirect_to admin_products_url, notice: "Product was successfully destroyed." }
